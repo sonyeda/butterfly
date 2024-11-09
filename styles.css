@@ -1,0 +1,250 @@
+@import url('https://unpkg.com/normalize.css') layer(normalize);
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@layer normalize, base, demo;
+
+@layer demo {
+  .bluesky {
+    --accent: #0285ff;
+    font-family: 'Inter', sans-serif;
+    font-size: 2.5rem;
+    text-decoration: none;
+    display: grid;
+    grid-auto-flow: column;
+    color: inherit;
+    gap: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .logo {
+    pointer-events: none;
+    height: 100%;
+    aspect-ratio: 1;
+    /* outline: blue dashed 2px; */
+    position: relative;
+    container-type: size;
+  }
+
+  .logo svg {
+    position: absolute;
+  }
+
+  .track {
+    display: inline-block;
+    width: 500%;
+    aspect-ratio: 1 / 1.5;
+    border-radius: 50%;
+    /* outline: 2px dashed red; */
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    translate: 0 -50%;
+  }
+
+  .butterfly {
+    display: inline-block;
+    width: 100cqi;
+    aspect-ratio: 1;
+    position: relative;
+    offset-path: border-box;
+    offset-distance: 25%;
+    offset-rotate: auto -90deg;
+    /* animation: float 1s infinite linear; */
+  }
+
+  @keyframes float {
+    to {
+      offset-distance: 0;
+    }
+  }
+
+  .butterfly__wings {
+    transform-style: preserve-3d;
+    perspective: 50px;
+    position: absolute;
+    inset: 0;
+  }
+
+  .bluesky:hover .butterfly__wings svg {
+    animation: flutter 0.1s 0.1s 4 alternate ease;
+  }
+  .bluesky:hover .butterfly__shadow svg {
+    animation: shade 0.1s 0.1s 4 alternate ease-in;
+  }
+
+  /* .butterfly__shadow svg {
+    translate: var(--tx, 0) 0;
+    transform: skewY(var(--skew, -20deg));
+    scale: var(--scale-x, 0.65) var(--scale-y, 1.2);
+  }
+
+  .butterfly__wings svg {
+    rotate: y var(--r, 45deg);
+    transform-style: preserve-3d;
+  } */
+
+  @keyframes flutter {
+    to {
+      rotate: y var(--r, 45deg);
+    }
+  }
+
+  @keyframes shade {
+    from {
+      transform: skewY(0deg);
+      scale: 1 1;
+    }
+    to {
+      translate: var(--tx, 0) 0;
+      transform: skewY(var(--skew, -20deg));
+      scale: var(--scale-x, 0.65) var(--scale-y, 1.2);
+    }
+  }
+
+  :where(.butterfly__wings, .butterfly__shadow) svg:first-of-type {
+    clip-path: inset(0 50% 0 0);
+  }
+  :where(.butterfly__wings, .butterfly__shadow) svg:last-of-type {
+    clip-path: inset(0 0 0 50%);
+  }
+
+  .butterfly__wings svg:first-of-type {
+    --r: 75deg;
+  }
+  .butterfly__wings svg:last-of-type {
+    --r: -75deg;
+  }
+  .butterfly__shadow svg:first-of-type {
+    --skew: -20deg;
+    --scale-x: 0.65;
+    --scale-y: 1.2;
+  }
+  .butterfly__shadow svg:last-of-type {
+    --skew: 20deg;
+    --scale-x: 0.35;
+    --scale-y: 1.2;
+    --tx: -6%;
+  }
+
+  .butterfly__wings path {
+    fill: var(--accent);
+  }
+
+  .butterfly__shadow path {
+    fill: hsl(0 0% 10% / 0.25);
+  }
+}
+
+@layer base {
+  :root {
+    --font-size-min: 16;
+    --font-size-max: 20;
+    --font-ratio-min: 1.2;
+    --font-ratio-max: 1.33;
+    --font-width-min: 375;
+    --font-width-max: 1500;
+  }
+
+  html {
+    color-scheme: light dark;
+  }
+
+  [data-theme='light'] {
+    color-scheme: light only;
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark only;
+  }
+
+  :where(.fluid) {
+    --fluid-min: calc(
+      var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0))
+    );
+    --fluid-max: calc(
+      var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0))
+    );
+    --fluid-preferred: calc(
+      (var(--fluid-max) - var(--fluid-min)) /
+        (var(--font-width-max) - var(--font-width-min))
+    );
+    --fluid-type: clamp(
+      (var(--fluid-min) / 16) * 1rem,
+      ((var(--fluid-min) / 16) * 1rem) -
+        (((var(--fluid-preferred) * var(--font-width-min)) / 16) * 1rem) +
+        (var(--fluid-preferred) * var(--variable-unit, 100vi)),
+      (var(--fluid-max) / 16) * 1rem
+    );
+    font-size: var(--fluid-type);
+  }
+
+  *,
+  *:after,
+  *:before {
+    box-sizing: border-box;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    font-family: 'SF Pro Text', 'SF Pro Icons', 'AOS Icons', 'Helvetica Neue',
+      Helvetica, Arial, sans-serif, system-ui;
+  }
+
+  body::before {
+    --size: 45px;
+    --line: color-mix(in lch, canvasText, transparent 70%);
+    content: '';
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background: linear-gradient(
+          90deg,
+          var(--line) 1px,
+          transparent 1px var(--size)
+        )
+        50% 50% / var(--size) var(--size),
+      linear-gradient(var(--line) 1px, transparent 1px var(--size)) 50% 50% /
+        var(--size) var(--size);
+    mask: linear-gradient(-20deg, transparent 50%, white);
+    top: 0;
+    transform-style: flat;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .bear-link {
+    color: canvasText;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 48px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    opacity: 0.8;
+  }
+
+  :where(.x-link, .bear-link):is(:hover, :focus-visible) {
+    opacity: 1;
+  }
+
+  .bear-link svg {
+    width: 75%;
+  }
+
+  /* Utilities */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
